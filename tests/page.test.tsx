@@ -12,13 +12,13 @@ vi.mock('next/image', () => ({
 }));
 
 describe('Home page', () => {
-  it('renders the getting started heading', () => {
+  it('renders the already started heading', () => {
     render(<Home />);
 
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /to get started, edit the page\.tsx file\./i,
+        name: /Already started. The CI\/CD and testing setup is ready\./i,
       }),
     ).toBeDefined();
   });
