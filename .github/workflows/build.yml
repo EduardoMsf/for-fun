@@ -1,4 +1,4 @@
-name: Build & SonarCloud
+name: CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   sonar:
-    name: Sonar Analysis
+    name: Test & Sonar
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 🔥 THIS IS CRITICAL (coverage for Sonar)
       - name: Run tests with coverage
         run: npm run test -- --coverage
 
@@ -31,3 +30,28 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Deploy to Vercel
+    needs: sonar
+    runs-on: ubuntu-latest
+
+    # 🔥 ONLY deploy if:
+    # - previous job succeeded
+    # - branch is main
+    if: success() && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build project
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (Production)
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
