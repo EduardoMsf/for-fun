@@ -49,7 +49,11 @@ jobs:
       - name: Build project
         # Added --yes here for CI stability
         run: vercel build --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          CI: true
 
       - name: Deploy to Vercel (Production)
         # --prebuilt + --prod ensures it only updates the main URL
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          CI: true
