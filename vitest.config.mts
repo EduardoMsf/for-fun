@@ -9,5 +9,12 @@ export default defineConfig({
     pool: 'threads',
     include: ['tests/**/*.test.{ts,tsx}'],
     setupFiles: ['./tests/setup.ts'],
+
+    coverage: {
+      enabled: true, // 🔥 ADD THIS
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      reportsDirectory: './coverage',
+    },
   },
 });
