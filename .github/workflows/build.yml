@@ -35,10 +35,6 @@ jobs:
     name: Deploy to Vercel
     needs: sonar
     runs-on: ubuntu-latest
-
-    # 🔥 ONLY deploy if:
-    # - previous job succeeded
-    # - branch is main
     if: success() && github.ref == 'refs/heads/main'
 
     steps:
@@ -51,7 +47,9 @@ jobs:
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build project
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        # Added --yes here for CI stability
+        run: vercel build --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel (Production)
+        # --prebuilt + --prod ensures it only updates the main URL
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
