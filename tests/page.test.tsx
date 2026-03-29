@@ -18,7 +18,7 @@ describe('Home page', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /Already started. The CI\/CD and testing setup is ready\./i,
+        name: /Here is where everything starts/i,
       }),
     ).toBeDefined();
   });

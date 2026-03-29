@@ -6,7 +6,7 @@ test('home page renders the already started heading', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: /Already started. The CI\/CD and testing setup is ready\./i,
+      name: /Here is where everything starts/i,
     }),
   ).toBeVisible();
 });
