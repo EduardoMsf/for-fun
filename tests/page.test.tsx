@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import type { ImgHTMLAttributes } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import Home from '@/src/app/page';
+import Home from '@/src/app/(shop)/page';
 
 vi.mock('next/image', () => ({
   default: (props: ImgHTMLAttributes<HTMLImageElement>) => (
