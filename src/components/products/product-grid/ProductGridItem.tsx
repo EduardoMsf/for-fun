@@ -23,6 +23,7 @@ export const ProductGridItem = ({ product }: Props) => {
     <div className="rounded-md overflow-hidden fade-in">
       <Link href={`/product/${product.slug}`}>
         <Image
+          loading="lazy"
           className="w-full object-cover rounded"
           src={`/products/${displayImage}`}
           alt={product.title}

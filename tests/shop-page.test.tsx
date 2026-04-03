@@ -10,8 +10,10 @@ describe('Shop page', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /here is where everything starts/i,
+        name: /tienda/i,
       }),
     ).toBeDefined();
+
+    expect(screen.getByText(/todos los productos/i)).toBeDefined();
   });
 });

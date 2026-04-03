@@ -9,6 +9,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:coverage": "node scripts/run-playwright-with-coverage.mjs",
+    "test:e2e:coverage:report": "node scripts/generate-playwright-coverage-report.mjs",
     "test:e2e:ui": "playwright test --ui",
     "lint": "eslint",
     "lint:commit": "commitlint --from HEAD~1 --to HEAD",

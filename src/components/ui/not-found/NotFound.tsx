@@ -21,6 +21,7 @@ export const NotFound = () => {
 
       <div className="px-5 mx-5">
         <Image
+          loading="lazy"
           src="/imgs/starman_750x750.png"
           alt="404"
           width={550}

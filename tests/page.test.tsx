@@ -12,14 +12,16 @@ vi.mock('next/image', () => ({
 }));
 
 describe('Home page', () => {
-  it('renders the already started heading', () => {
+  it('renders the shop heading', () => {
     render(<Home />);
 
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /Here is where everything starts/i,
+        name: /tienda/i,
       }),
     ).toBeDefined();
+
+    expect(screen.getByText(/todos los productos/i)).toBeDefined();
   });
 });
