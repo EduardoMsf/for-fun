@@ -1,4 +1,9 @@
-import { QuantitySelector, SizeSelector } from '@/src/components';
+import {
+  ProductMobileSlideshow,
+  ProductSlideshow,
+  QuantitySelector,
+  SizeSelector,
+} from '@/src/components';
 import { initialData } from '@/src/seed/seed';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -21,11 +26,16 @@ export default async function ProductPage({ params }: Props) {
     <div className="mt-5 mb-20 grid md:grid-cols-3 gap-3">
       {/* Image Section */}
       <div className="col-span-1 md:col-span-2">
-        <Image
-          src={`/products/${product.images[0]}`}
-          alt={product.title}
-          width={500}
-          height={500}
+        {/* Desktop /> */}
+        <ProductSlideshow
+          title={product.title}
+          images={product.images}
+          className="hidden md:block"
+        />
+        <ProductMobileSlideshow
+          title={product.title}
+          images={product.images}
+          className="block md:hidden"
         />
       </div>
 

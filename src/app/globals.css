@@ -53,8 +53,7 @@ body {
   animation-name: fadeIn;
 }
 
-/*
-@keyframes blob {
+/* @keyframes blob {
   0% {
     transform: translate(0px, 0px) scale(1);
   }
@@ -87,8 +86,7 @@ body {
 
 .animation-delay-6000 {
   animation-delay: 6s;
-}
-*/
+} */
 
 .btn-primary {
   background-color: var(--color-blue-600);
