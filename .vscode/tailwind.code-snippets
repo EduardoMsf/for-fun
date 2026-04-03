@@ -1,0 +1,20 @@
+{
+  "Tailwind grid cols 2": {
+    "scope": "typescriptreact,javascriptreact,typescript,javascript,html",
+    "prefix": "gridcols2",
+    "body": "grid grid-cols-2",
+    "description": "Expand to Tailwind grid with 2 columns"
+  },
+  "Tailwind grid cols 3": {
+    "scope": "typescriptreact,javascriptreact,typescript,javascript,html",
+    "prefix": "gridcols3",
+    "body": "grid grid-cols-3",
+    "description": "Expand to Tailwind grid with 3 columns"
+  },
+  "Tailwind flex center": {
+    "scope": "typescriptreact,javascriptreact,typescript,javascript,html",
+    "prefix": "flexcenter",
+    "body": "flex items-center justify-center",
+    "description": "Expand to centered flex utilities"
+  }
+}

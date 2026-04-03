@@ -1,13 +1,13 @@
-import { titleFont } from '@/src/config/font';
+import { Title, ProductGrid } from '@/src/components';
+import { initialData } from '@/src/seed/seed';
+
+const products = initialData.products;
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center font-sans ">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16  sm:items-start">
-        <h1 className={`${titleFont.className} font-bold text-white`}>
-          Here is where everything starts
-        </h1>
-      </main>
+    <div className="flex flex-col flex-1 justify-center font-sans ">
+      <Title title="Tienda" subtitle="Todos los productos" className="mt-2" />
+      <ProductGrid products={products} />
     </div>
   );
 }
