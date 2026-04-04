@@ -1,7 +1,7 @@
 import { Title } from '@/src/components';
+import { OrderItemCard } from '@/src/components/product/order-item-card/OrderItemCard';
 import { initialData } from '@/src/seed/seed';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { IoCartOutline } from 'react-icons/io5';
 
 const productsInCart = [
@@ -38,28 +38,11 @@ export default async function OrderPage({ params }: Readonly<Props>) {
             </div>
 
             {productsInCart.map((product) => (
-              <div key={product.slug} className="flex mb-5">
-                <Image
-                  src={`/products/${product.images[0]}`}
-                  alt={product.title}
-                  width={100}
-                  height={100}
-                  className="mr-5 rounded"
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'cover',
-                  }}
-                />
-                <div>
-                  <p>{product.title}</p>
-                  <p>${product.price.toFixed(2)} x 3</p>
-                  <p className="font-bold">${(product.price * 3).toFixed(2)}</p>
-                  <button className="underline mt-3 cursor-pointer">
-                    Remove
-                  </button>
-                </div>
-              </div>
+              <OrderItemCard
+                key={product.slug}
+                product={product}
+                quantity={3} // Aquí usarías product.quantity
+              />
             ))}
           </div>
 
