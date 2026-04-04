@@ -1,4 +1,4 @@
-import { QuantitySelector, Title } from '@/src/components';
+import { Title } from '@/src/components';
 import { initialData } from '@/src/seed/seed';
 import Image from 'next/image';
 import Link from 'next/link';

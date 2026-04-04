@@ -5,7 +5,6 @@ import {
   SizeSelector,
 } from '@/src/components';
 import { initialData } from '@/src/seed/seed';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -14,7 +13,7 @@ interface Props {
   }>;
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({ params }: Readonly<Props>) {
   const { slug } = await params;
 
   const product = initialData.products.find((product) => product.slug === slug);
