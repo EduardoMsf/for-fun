@@ -9,12 +9,20 @@ export default defineConfig({
     pool: 'threads',
     include: ['tests/**/*.test.{ts,tsx}'],
     setupFiles: ['./tests/setup.ts'],
-
     coverage: {
-      enabled: true, // 🔥 ADD THIS
+      enabled: true,
+      all: true,
       provider: 'v8',
-      reporter: ['text', 'lcov'],
+      reporter: ['text', 'lcov', 'html'],
       reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.d.ts',
+        'src/**/*.css',
+        'src/**/index.ts',
+        'src/app/globals.css',
+        'src/app/favicon.ico',
+      ],
     },
   },
 });

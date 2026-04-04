@@ -35,15 +35,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params }: Readonly<Props>) {
   const { id } = await params;
   const categoryLabel = getCategoryLabel(id);
 
   const productByCategory = products.filter((product) => product.gender === id);
 
-  // if (id === 'kids') {
-  //   notFound();
-  // }
   return (
     <div className="flex flex-col flex-1 justify-center font-sans ">
       <Title
