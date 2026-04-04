@@ -1,0 +1,10 @@
+{
+  "editor.snippetSuggestions": "top",
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.configFile": "src/app/globals.css"
+}
