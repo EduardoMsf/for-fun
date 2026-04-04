@@ -41,9 +41,6 @@ export default async function CategoryPage({ params }: Props) {
 
   const productByCategory = products.filter((product) => product.gender === id);
 
-  // if (id === 'kids') {
-  //   notFound();
-  // }
   return (
     <div className="flex flex-col flex-1 justify-center font-sans ">
       <Title
