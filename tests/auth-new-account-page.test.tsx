@@ -10,8 +10,20 @@ describe('New account page', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /new account/i,
+        name: /create account/i,
       }),
     ).toBeDefined();
+
+    expect(
+      screen.getByRole('button', { name: /create account/i }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole('link', { name: /have an account\? sign in/i }),
+    ).toBeDefined();
+    expect(
+      screen
+        .getByRole('link', { name: /have an account\? sign in/i })
+        .getAttribute('href'),
+    ).toBe('/auth/login');
   });
 });
