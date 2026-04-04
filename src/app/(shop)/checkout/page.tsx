@@ -1,6 +1,6 @@
 import { Title } from '@/src/components';
+import { OrderItemCard } from '@/src/components/product/order-item-card/OrderItemCard';
 import { initialData } from '@/src/seed/seed';
-import Image from 'next/image';
 import Link from 'next/link';
 
 const productsInCart = [
@@ -21,28 +21,11 @@ export default function CheckoutPage() {
             </Link>
 
             {productsInCart.map((product) => (
-              <div key={product.slug} className="flex mb-5">
-                <Image
-                  src={`/products/${product.images[0]}`}
-                  alt={product.title}
-                  width={100}
-                  height={100}
-                  className="mr-5 rounded"
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'cover',
-                  }}
-                />
-                <div>
-                  <p>{product.title}</p>
-                  <p>${product.price.toFixed(2)} x 3</p>
-                  <p className="font-bold">${(product.price * 3).toFixed(2)}</p>
-                  <button className="underline mt-3 cursor-pointer">
-                    Remove
-                  </button>
-                </div>
-              </div>
+              <OrderItemCard
+                key={product.slug}
+                product={product}
+                quantity={3} // Aquí usarías product.quantity
+              />
             ))}
           </div>
 
