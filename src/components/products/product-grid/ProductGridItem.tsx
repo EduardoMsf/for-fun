@@ -10,28 +10,38 @@ interface Props {
 }
 
 export const ProductGridItem = ({ product, priority = false }: Props) => {
-  const [displayImage, setDisplayImage] = useState(product.images[0]);
+  // const [displayImage, setDisplayImage] = useState(product.images[0]);
 
-  const handleImageChange = (showSecondaryImage: boolean) => {
-    setDisplayImage(
-      showSecondaryImage
-        ? product.images[1] || product.images[0]
-        : product.images[0],
-    );
-  };
+  // const handleImageChange = (showSecondaryImage: boolean) => {
+  //   setDisplayImage(
+  //     showSecondaryImage
+  //       ? product.images[1] || product.images[0]
+  //       : product.images[0],
+  //   );
+  // };
+
+  // 1. Mantenemos el estado para el hover, pero NO lo usamos para el src inicial del render
+  const [hoverImage, setHoverImage] = useState<string | null>(null);
+
+  // 2. Determinamos la imagen a mostrar basándonos en si hay hover o no
+  // Si no hay hover, usamos directamente la primera imagen del array (evita delay de hidratación)
+  const currentImage = hoverImage || product.images[0];
 
   return (
-    <div className="rounded-md overflow-hidden fade-in">
+    <div className={`rounded-md overflow-hidden ${priority ? '' : 'fade-in'}`}>
       <Link href={`/product/${product.slug}`}>
         <Image
           priority={priority}
+          fetchPriority={priority ? 'high' : 'auto'}
           className="w-full object-cover rounded"
-          src={`/products/${displayImage}`}
+          src={`/products/${currentImage}`}
           alt={product.title}
           width={500}
           height={500}
-          onMouseEnter={() => handleImageChange(true)}
-          onMouseLeave={() => handleImageChange(false)}
+          onMouseEnter={() =>
+            setHoverImage(product.images[1] || product.images[0])
+          }
+          onMouseLeave={() => setHoverImage(null)}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </Link>
