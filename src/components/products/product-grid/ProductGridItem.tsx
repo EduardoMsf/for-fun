@@ -6,9 +6,10 @@ import { useState } from 'react';
 
 interface Props {
   product: Product;
+  priority?: boolean;
 }
 
-export const ProductGridItem = ({ product }: Props) => {
+export const ProductGridItem = ({ product, priority = false }: Props) => {
   const [displayImage, setDisplayImage] = useState(product.images[0]);
 
   const handleImageChange = (showSecondaryImage: boolean) => {
@@ -23,7 +24,7 @@ export const ProductGridItem = ({ product }: Props) => {
     <div className="rounded-md overflow-hidden fade-in">
       <Link href={`/product/${product.slug}`}>
         <Image
-          loading="lazy"
+          priority={priority}
           className="w-full object-cover rounded"
           src={`/products/${displayImage}`}
           alt={product.title}
@@ -31,6 +32,7 @@ export const ProductGridItem = ({ product }: Props) => {
           height={500}
           onMouseEnter={() => handleImageChange(true)}
           onMouseLeave={() => handleImageChange(false)}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </Link>
       <div className="p-4 flex flex-col">

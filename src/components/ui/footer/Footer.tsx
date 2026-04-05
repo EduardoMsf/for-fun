@@ -12,7 +12,7 @@ export const Footer = () => {
             `}</style>
 
       <footer className="flex flex-wrap justify-center lg:justify-between overflow-hidden gap-10 md:gap-20 py-16 px-6 md:px-16 lg:px-24 xl:px-32 text-[13px] text-gray-500 bg-black">
-        <div className="flex flex-wrap items-start gap-10 md:gap-[60px] xl:gap-[140px]">
+        <div className="flex flex-wrap items-start gap-10 md:gap-15 xl:gap-35">
           <Link href="https://prebuiltui.com">
             <svg
               width="31"
