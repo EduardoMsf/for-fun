@@ -36,6 +36,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4 # Recomendado añadir setup-node aquí también
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
 
       - name: Install Vercel CLI
         run: npm install -g vercel
