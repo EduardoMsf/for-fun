@@ -20,6 +20,8 @@ export default defineConfig({
         'src/**/*.css',
         'src/**/index.ts',
         'src/generated/**',
+        'src/lib/**',
+        'src/seed/**',
         'src/app/globals.css',
         'src/app/favicon.ico',
       ],
