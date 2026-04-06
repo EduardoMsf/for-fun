@@ -10,6 +10,7 @@ import { StockLabel } from '@/src/components/product/stock-label/StockLabel';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { AddToCart } from './ui/AddToCart';
 
 interface Props {
   params: Promise<{
@@ -65,14 +66,7 @@ export default async function ProductPage({ params }: Readonly<Props>) {
         <h1 className="antialiased font-bold text-xl">{product.title}</h1>
         <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
 
-        <SizeSelector
-          selectedSize={product.sizes[0]}
-          availableSizes={product.sizes}
-        />
-
-        <QuantitySelector quantity={2} />
-
-        <button className="btn-primary my-5">Add to Cart</button>
+        <AddToCart product={product} />
         <h3 className="font-bold text-sm">Description</h3>
         <p className="font-light">{product.description}</p>
       </div>
