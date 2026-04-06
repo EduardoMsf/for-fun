@@ -88,7 +88,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link href="/" className="hover:text-indigo-600 transition">
-                  Careers
+                  Careers{' '}
                   <span className="text-xs text-white bg-indigo-600 rounded-md ml-2 px-2 py-1">
                     We’re hiring!
                   </span>
