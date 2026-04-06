@@ -8,17 +8,17 @@ describe('TopMenu', () => {
   it('renders navigation links', () => {
     render(<TopMenu />);
 
-    expect(
-      screen.getByRole('link', { name: /teslo/i }).getAttribute('href'),
-    ).toBe('/');
-    expect(screen.getByRole('link', { name: 'Men' }).getAttribute('href')).toBe(
-      '/gender/men',
+    expect(screen.getByRole('link', { name: /teslo/i }).getAttribute('href')).toBe(
+      '/',
     );
-    expect(
-      screen.getByRole('link', { name: 'Women' }).getAttribute('href'),
-    ).toBe('/gender/women');
+    expect(screen.getByRole('link', { name: 'Men' }).getAttribute('href')).toBe(
+      '/category/men',
+    );
+    expect(screen.getByRole('link', { name: 'Women' }).getAttribute('href')).toBe(
+      '/category/women',
+    );
     expect(screen.getByRole('link', { name: 'Kid' }).getAttribute('href')).toBe(
-      '/gender/kid',
+      '/category/kid',
     );
   });
 
