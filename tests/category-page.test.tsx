@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import CategoryPage, {
   generateMetadata,
-} from '@/src/app/(shop)/category/[id]/page';
+} from '@/src/app/(shop)/gender/[gender]/page';
 import { initialData } from '@/src/seed/seed';
 
 describe('Category page', () => {
