@@ -1,13 +1,13 @@
 import { Title } from '@/src/components';
 import { OrderItemCard } from '@/src/components/product/order-item-card/OrderItemCard';
-import type { Product } from '@/src/interfaces';
 import { initialData } from '@/src/seed/seed';
 import Link from 'next/link';
 
-const productsInCart: Product[] = initialData.products.slice(0, 3).map((product) => ({
-  ...product,
-  id: product.slug,
-}));
+const productsInCart = [
+  initialData.products[0],
+  initialData.products[1],
+  initialData.products[2],
+];
 export default function CheckoutPage() {
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">

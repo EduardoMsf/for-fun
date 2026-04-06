@@ -1,14 +1,14 @@
 import { Title } from '@/src/components';
 import { OrderItemCard } from '@/src/components/product/order-item-card/OrderItemCard';
-import type { Product } from '@/src/interfaces';
 import { initialData } from '@/src/seed/seed';
 import clsx from 'clsx';
 import { IoCartOutline } from 'react-icons/io5';
 
-const productsInCart: Product[] = initialData.products.slice(0, 3).map((product) => ({
-  ...product,
-  id: product.slug,
-}));
+const productsInCart = [
+  initialData.products[0],
+  initialData.products[1],
+  initialData.products[2],
+];
 
 interface Props {
   params: Promise<{
