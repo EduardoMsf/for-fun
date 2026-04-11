@@ -59,7 +59,6 @@ export default async function CategoryPage({
   const { products, currentPage, totalPages } =
     await getPaginatedProductsWithImages({ page, take, gender });
 
-  console.log('gender', gender, currentPage, totalPages);
   const productByCategory = products.filter(
     (product) => product.gender === gender,
   );

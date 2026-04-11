@@ -21,13 +21,15 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
+  const productImage = product?.images[1] ?? product?.images[0];
+
   return {
     title: `${product?.title} | Tienda`,
     description: product?.description,
     openGraph: {
       title: `${product?.title} | Tienda`,
       description: product?.description,
-      images: [`/products/${product?.images[1]}`],
+      images: productImage ? [`/products/${productImage}`] : [],
     },
   };
 }
@@ -37,7 +39,6 @@ export default async function ProductPage({ params }: Readonly<Props>) {
 
   // const product = initialData.products.find((product) => product.slug === slug);
   const product = await getProductBySlug(slug);
-  console.log(product);
 
   if (!product) {
     notFound();
