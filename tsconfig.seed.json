@@ -1,13 +1,10 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "outDir": "dist-seed",
-    "rootDir": "src",
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true
   },
-  "include": ["src/seed"]
+  "include": ["src/seed/**/*.ts"]
 }

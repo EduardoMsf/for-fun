@@ -1,18 +1,23 @@
 import 'dotenv/config';
 
-import { prisma } from '../lib/prisma';
-import { initialData } from './seed';
+import { prisma } from '../lib/prisma.js';
+import { initialData } from './seed.js';
 
 type SeedableSize = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 
 const validSizes = new Set<SeedableSize>(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
 
 async function main() {
+  await prisma.user.deleteMany();
   await prisma.productImage.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
 
-  const { categories, products } = initialData;
+  const { categories, products, users } = initialData;
+
+  await prisma.user.createMany({
+    data: users,
+  });
   const uniqueCategories = categories.map((name) => ({ name }));
 
   await prisma.category.createMany({
@@ -21,7 +26,7 @@ async function main() {
 
   const categoriesDB = await prisma.category.findMany();
   const categoriesMap = categoriesDB.reduce(
-    (map, category) => {
+    (map: Record<string, string>, category: { id: string; name: string }) => {
       map[category.name] = category.id;
       return map;
     },
