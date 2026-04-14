@@ -10,10 +10,12 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    console.log('form:', { formData });
-    await signIn('credentials', formData);
+    await signIn('credentials', {
+      ...Object.fromEntries(formData),
+      redirect: false, // 👈 evita que NextAuth redirija internamente
+    });
 
-    return 'Succes1';
+    return 'Success';
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -26,3 +28,18 @@ export async function authenticate(
     throw error;
   }
 }
+
+export const login = async (email: string, password: string) => {
+  try {
+    await signIn('credentials', { email, password });
+    return {
+      ok: true,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: 'Cannot signIn',
+    };
+  }
+};

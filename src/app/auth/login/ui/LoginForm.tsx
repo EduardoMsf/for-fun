@@ -3,16 +3,23 @@
 import { authenticate } from '@/src/actions/auth/login';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { IoKeyOutline, IoSync } from 'react-icons/io5';
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('redirectTo') || '/';
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [state, formAction, isPending] = useActionState(
     authenticate,
     undefined,
   );
+  console.log(callbackUrl);
+
+  useEffect(() => {
+    if (state === 'Success') {
+      window.location.replace(callbackUrl);
+    }
+  }, [state]);
   return (
     <form action={formAction} className="w-full">
       <input type="hidden" name="redirectTo" value={callbackUrl} />
@@ -55,9 +62,7 @@ export const LoginForm = () => {
           <IoKeyOutline className="pointer-events-none absolute left-3 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
         </div>
       </div>
-      {errorMessage ? (
-        <p className="mt-3 text-sm text-red-600">{errorMessage}</p>
-      ) : null}
+      {state ? <p className="mt-3 text-sm text-red-600">{state}</p> : null}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"

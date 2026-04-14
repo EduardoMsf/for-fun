@@ -11,7 +11,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
           <div className="flex flex-col mt-5">
             <span className="text-xl">Add more items</span>
-            <Link href="/checkout" className="underline mb-5">
+            <Link href="/" className="underline mb-5">
               Keep shopping
             </Link>
 
@@ -24,7 +24,7 @@ export default function CartPage() {
             <OrderSummary />
             <div className=" mt-5 mb-2 w-full">
               <Link
-                href="/checkout"
+                href="/checkout/address"
                 className="flex btn-primary justify-center"
               >
                 Proceed to Checkout

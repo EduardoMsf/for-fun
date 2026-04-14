@@ -23,6 +23,8 @@ export const Sidebar = () => {
 
   const { data: session } = useSession();
   const isAuthenticated = !!session?.user;
+  const isAdmin = session?.user.role === 'admin';
+
   console.log({ session });
   return (
     <div>
@@ -104,31 +106,33 @@ export const Sidebar = () => {
           />
         </div>
 
-        <Link
-          href="/profile"
-          onClick={closeSideMenu}
-          className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-        >
-          <IoPersonOutline size={25} />
-          <span className="text-lg ml-3">Profile</span>
-        </Link>
-        <Link
-          href="/"
-          className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-        >
-          <IoTicketOutline size={25} />
-          <span className="text-lg ml-3">Orders</span>
-        </Link>
-
         {isAuthenticated && (
-          <Link
-            href="/"
-            onClick={() => logout()}
-            className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-          >
-            <IoLogOutOutline size={25} />
-            <span className="text-lg ml-3">Logout</span>
-          </Link>
+          <>
+            <Link
+              href="/profile"
+              onClick={closeSideMenu}
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoPersonOutline size={25} />
+              <span className="text-lg ml-3">Profile</span>
+            </Link>
+            <Link
+              href="/"
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoTicketOutline size={25} />
+              <span className="text-lg ml-3">Orders</span>
+            </Link>
+
+            <Link
+              href="/"
+              onClick={() => logout()}
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoLogOutOutline size={25} />
+              <span className="text-lg ml-3">Logout</span>
+            </Link>
+          </>
         )}
 
         {!isAuthenticated && (
@@ -143,28 +147,31 @@ export const Sidebar = () => {
         )}
 
         <div className="w-full h-px bg-white/30 my-10" />
-
-        <Link
-          href="/"
-          className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-        >
-          <IoShirtOutline size={25} />
-          <span className="text-lg ml-3">Products</span>
-        </Link>
-        <Link
-          href="/"
-          className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-        >
-          <IoTicketOutline size={25} />
-          <span className="text-lg ml-3">Orders</span>
-        </Link>
-        <Link
-          href="/"
-          className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
-        >
-          <IoPeopleOutline size={25} />
-          <span className="text-lg ml-3">Clients</span>
-        </Link>
+        {isAdmin && (
+          <>
+            <Link
+              href="/"
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoShirtOutline size={25} />
+              <span className="text-lg ml-3">Products</span>
+            </Link>
+            <Link
+              href="/"
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoTicketOutline size={25} />
+              <span className="text-lg ml-3">Orders</span>
+            </Link>
+            <Link
+              href="/"
+              className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
+            >
+              <IoPeopleOutline size={25} />
+              <span className="text-lg ml-3">Clients</span>
+            </Link>
+          </>
+        )}
       </nav>
     </div>
   );

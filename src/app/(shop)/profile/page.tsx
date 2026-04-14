@@ -8,8 +8,9 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <Title title="Monina" />
+      <Title title={session.user.name} />
       <pre>{JSON.stringify(session, null, 2)}</pre>
+      <div>{session.user.role}</div>
     </div>
   );
 }
