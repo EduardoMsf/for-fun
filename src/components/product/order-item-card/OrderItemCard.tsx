@@ -29,9 +29,9 @@ export const OrderItemCard = ({ product, quantity }: Readonly<Props>) => {
         </p>
         <p className="font-bold">${subtotal}</p>
 
-        <button className="underline mt-1 text-sm cursor-pointer hover:text-blue-600 transition-colors">
+        {/* <button className="underline mt-1 text-sm cursor-pointer hover:text-blue-600 transition-colors">
           Remove
-        </button>
+        </button> */}
       </div>
     </div>
   );

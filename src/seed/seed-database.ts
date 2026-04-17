@@ -2,16 +2,19 @@ import 'dotenv/config';
 
 import { prisma } from '../lib/prisma.js';
 import { initialData } from './seed.js';
+import { countries } from './seed-countries.js';
 
 type SeedableSize = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 
 const validSizes = new Set<SeedableSize>(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
 
 async function main() {
+  await prisma.userAddress.deleteMany();
   await prisma.user.deleteMany();
   await prisma.productImage.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.country.deleteMany();
 
   const { categories, products, users } = initialData;
 
@@ -22,6 +25,9 @@ async function main() {
 
   await prisma.category.createMany({
     data: uniqueCategories,
+  });
+  await prisma.country.createMany({
+    data: countries,
   });
 
   const categoriesDB = await prisma.category.findMany();

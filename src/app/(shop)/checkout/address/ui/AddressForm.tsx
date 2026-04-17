@@ -1,6 +1,12 @@
 'use client';
 
+import { deleteUserAddress, setUserAddres } from '@/src/actions';
+import { Address, Country } from '@/src/interfaces';
+import { useAddressStore } from '@/src/store';
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 type FormInputs = {
@@ -15,19 +21,51 @@ type FormInputs = {
   rememberAddress: boolean;
 };
 
-export const AddressForm = () => {
+interface Props {
+  countries: Country[];
+  userStoreAddress?: Partial<Address>;
+}
+
+export const AddressForm = ({ countries, userStoreAddress = {} }: Props) => {
   const {
     handleSubmit,
     register,
     formState: { isValid },
+    reset,
   } = useForm<FormInputs>({
     defaultValues: {
-      //TODO
+      ...(userStoreAddress as any),
+      rememberAddress: true,
     },
   });
+  const setAddress = useAddressStore((state) => state.setAddress);
+  const storeAddress = useAddressStore((state) => state.address);
 
-  const onSubmit = (data: FormInputs) => {
+  const router = useRouter();
+
+  const { data: session } = useSession({
+    required: true,
+  });
+
+  useEffect(() => {
+    if (storeAddress.firstName) {
+      reset(storeAddress);
+    }
+  }, []);
+
+  const onSubmit = async (data: FormInputs) => {
     console.log(data);
+    setAddress(data);
+
+    const { rememberAddress, ...restAddres } = data;
+
+    if (rememberAddress) {
+      await setUserAddres(restAddres, session!.user.id);
+    } else {
+      await deleteUserAddress(session!.user.id);
+    }
+
+    router.push('/checkout');
   };
   return (
     <form
@@ -95,12 +133,11 @@ export const AddressForm = () => {
           {...register('country', { required: true })}
         >
           <option value="">[ Seleccione ]</option>
-          <option value="MEX">México</option>
-          <option value="USA">Estados Unidos</option>
-          <option value="CAN">Canadá</option>
-          <option value="ESP">España</option>
-          <option value="FRA">Francia</option>
-          <option value="GER">Alemania</option>
+          {countries.map((country) => (
+            <option key={country.id} value={country.id}>
+              {country.name}
+            </option>
+          ))}
         </select>
       </div>
 

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import CheckoutPage from '@/src/app/(shop)/checkout/page';
+import CheckoutPage from '@/src/app/(shop)/checkout/(checkout)/page';
 import { initialData } from '@/src/seed/seed';
 
 describe('Checkout page', () => {
@@ -12,9 +12,9 @@ describe('Checkout page', () => {
       screen.getByRole('heading', { level: 1, name: /confirm order/i }),
     ).toBeDefined();
     expect(screen.getByText('Elements')).toBeDefined();
-    expect(screen.getByRole('link', { name: /edit cart/i }).getAttribute('href')).toBe(
-      '/cart',
-    );
+    expect(
+      screen.getByRole('link', { name: /edit cart/i }).getAttribute('href'),
+    ).toBe('/cart');
   });
 
   it('renders the products from the mocked cart', () => {
