@@ -117,7 +117,8 @@ export const Sidebar = () => {
               <span className="text-lg ml-3">Profile</span>
             </Link>
             <Link
-              href="/"
+              href="/orders"
+              onClick={closeSideMenu}
               className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
             >
               <IoTicketOutline size={25} />

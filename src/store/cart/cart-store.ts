@@ -16,6 +16,8 @@ interface CartState {
     taxes: number;
     total: number;
   };
+
+  clearCart: () => void;
 }
 
 const getTotalItems = (cart: CartProduct[]) =>
@@ -100,6 +102,12 @@ export const useCartStore = create<CartState>()(
             totalItems: getTotalItems(updatedCart),
           };
         });
+      },
+      clearCart: () => {
+        set(() => ({
+          cart: [],
+          totalItems: 0,
+        }));
       },
     }),
     {
