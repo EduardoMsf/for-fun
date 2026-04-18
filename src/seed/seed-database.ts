@@ -9,6 +9,10 @@ type SeedableSize = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 const validSizes = new Set<SeedableSize>(['S', 'M', 'L', 'XL', 'XXL', 'XXXL']);
 
 async function main() {
+  await prisma.orderAddress.deleteMany();
+  await prisma.orderItem.deleteMany();
+  await prisma.order.deleteMany();
+
   await prisma.userAddress.deleteMany();
   await prisma.user.deleteMany();
   await prisma.productImage.deleteMany();

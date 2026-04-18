@@ -2,10 +2,13 @@
 
 import { useAddressStore, useCartStore } from '@/src/store';
 import { currencyFormatted } from '@/src/utils';
+import clsx from 'clsx';
 import { useEffect, useState } from 'react';
+import { size } from 'zod';
 
 export const PlaceOrder = () => {
   const [loaded, setLoaded] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   const address = useAddressStore((state) => state.address);
   const totalItems = useCartStore((state) => state.totalItems);
@@ -15,11 +18,26 @@ export const PlaceOrder = () => {
       0,
     ),
   );
+  const cart = useCartStore((state) => state.cart);
   const taxes = subTotal * 0.15;
   const total = subTotal + taxes;
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const onPlaceOrder = async () => {
+    setIsPlacingOrder(true);
+
+    console.log('address', address);
+    const productsToOrder = cart.map((product) => ({
+      productId: product.id,
+      quantity: product.quantity,
+      size: product.size,
+    }));
+    console.log(productsToOrder);
+
+    setIsPlacingOrder(false);
+  };
 
   if (!loaded) return <p>Loading...</p>;
 
@@ -56,9 +74,16 @@ export const PlaceOrder = () => {
             Policy.
           </span>
         </p>
+
+        <p className="mb-5">Error</p>
         <button
           // href="/orders/abc"
-          className="flex btn-primary justify-center"
+          onClick={onPlaceOrder}
+          disabled={isPlacingOrder}
+          className={clsx('px-5 py-2 rounded mb-5 border', {
+            'bg-gray-200 ': isPlacingOrder,
+            'bg-green-500 text-white': !isPlacingOrder,
+          })}
         >
           Place Order
         </button>
