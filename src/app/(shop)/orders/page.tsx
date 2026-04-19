@@ -13,7 +13,6 @@ export default async function OrdersPage() {
   if (!ok) {
     redirect('/auth/login?navigateTo=/orders');
   }
-  console.log('orders', orders);
   return (
     <>
       <Title title="Orders" />

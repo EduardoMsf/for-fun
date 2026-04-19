@@ -11,3 +11,5 @@ export * from './address/get-user-address';
 export * from './order/place-order';
 export * from './order/get-order-by-id';
 export * from './order/get-order-by-user';
+export * from './payment/set-transaction-id';
+export * from './payment/paypal-check-payment';

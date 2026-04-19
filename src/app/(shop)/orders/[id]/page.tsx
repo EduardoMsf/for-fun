@@ -1,19 +1,8 @@
 import { getOrderById } from '@/src/actions';
-import { Title } from '@/src/components';
-import type { Product } from '@/src/interfaces';
-import { initialData } from '@/src/seed/seed';
-import clsx from 'clsx';
+import { OrderStatus, PayPalButton, Title } from '@/src/components';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import { IoCartOutline } from 'react-icons/io5';
 import { currencyFormatted } from '../../../../utils/currencyFormatted';
-
-const productsInCart: Product[] = initialData.products
-  .slice(0, 3)
-  .map((product) => ({
-    ...product,
-    id: product.slug,
-  }));
 
 interface Props {
   params: Promise<{
@@ -35,21 +24,7 @@ export default async function OrderPage({ params }: Readonly<Props>) {
         <Title title={`Order #${id.split('-').at(-1)}`} />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
           <div className="flex flex-col mt-5">
-            <div
-              className={clsx(
-                'flex items-center rounded-lg py-2px3 px-3.5 text-xs font-bold text-white mb-5',
-                {
-                  'bg-red-500': !order?.isPaid,
-                  'bg-green-700': order?.isPaid,
-                },
-              )}
-            >
-              <IoCartOutline size={30} />
-              <span>
-                {order?.isPaid ? 'Payment completed' : 'Payment pending'}
-              </span>
-            </div>
-
+            <OrderStatus isPaid={order!.isPaid} />
             {order!.OrderItem.map((product) => (
               <div
                 className="flex mb-5"
@@ -108,21 +83,11 @@ export default async function OrderPage({ params }: Readonly<Props>) {
               </span>
             </div>
             <div className=" mt-5 mb-2 w-full">
-              <div
-                className={clsx(
-                  'flex items-center rounded-lg py-2px3 px-3.5 text-xs font-bold text-white mb-5',
-                  {
-                    'bg-red-500': !order?.isPaid,
-                    'bg-green-700': order?.isPaid,
-                  },
-                )}
-              >
-                <IoCartOutline size={30} />
-
-                <span>
-                  {order?.isPaid ? 'Payment completed' : 'Payment pending'}
-                </span>
-              </div>
+              {order!.isPaid ? (
+                <OrderStatus isPaid={order!.isPaid} />
+              ) : (
+                <PayPalButton amount={order!.total} orderId={order!.id} />
+              )}
             </div>
           </div>
         </div>

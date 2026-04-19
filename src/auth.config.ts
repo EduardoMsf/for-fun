@@ -16,7 +16,6 @@ export const authConfig = {
         if (!parsedCredentials.success) return null;
 
         const { email, password } = parsedCredentials.data;
-        console.log({ email, password });
 
         const user = await prisma.user.findUnique({
           where: {
@@ -29,7 +28,6 @@ export const authConfig = {
         if (!bcryptjs.compareSync(password, user.password)) return null;
 
         const { password: _, ...rest } = user;
-        console.log({ rest });
 
         return rest;
       },
@@ -44,16 +42,13 @@ export const authConfig = {
       if (user) {
         token.data = user;
       }
-      // console.log({ token, user });
       return token;
     },
     session({ session, token, user }) {
-      console.log({ session, token, user });
       session.user = token.data as any;
       return session;
     },
     authorized({ auth, request: { nextUrl } }) {
-      console.log('dat', { auth });
       // const isLoggedIn = !!auth?.user;
       // const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       // if (isOnDashboard) {

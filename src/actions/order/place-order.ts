@@ -30,19 +30,13 @@ export const placeORder = async (
       message: 'User not authenticated',
     };
   }
-  console.log('Product IDs:', productIds);
-  console.log('Address:', address);
-  console.log('User ID:', userId);
 
   const products = await prisma.product.findMany({
     where: {
       id: { in: productIds.map((p) => p.productId) },
     },
   });
-  console.log('products', products);
-
   const itemsInOrder = productIds.reduce((count, p) => count + p.quantity, 0);
-  console.log('items', itemsInOrder);
 
   const { subtotal, tax, total } = productIds.reduce(
     (totals, item) => {
@@ -60,10 +54,6 @@ export const placeORder = async (
     },
     { subtotal: 0, tax: 0, total: 0 },
   );
-
-  console.log('subtotal', subtotal);
-  console.log('tax', tax);
-  console.log('total', total);
 
   try {
     const prismaTx = await prisma.$transaction(async (tx) => {

@@ -13,7 +13,6 @@ export const LoginForm = () => {
     authenticate,
     undefined,
   );
-  console.log(callbackUrl);
 
   useEffect(() => {
     if (state === 'Success') {
