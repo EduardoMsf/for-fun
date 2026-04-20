@@ -1,10 +1,14 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.240.1'],
+  outputFileTracingRoot: path.join(__dirname),
   outputFileTracingIncludes: {
-    '/**': ['./src/generated/prisma/**/*'],
+    '/**': [
+      './src/generated/prisma/**/*',
+      './node_modules/.prisma/**/*',
+      './node_modules/@prisma/engines/**/*',
+    ],
   },
 };
-
-export default nextConfig;
