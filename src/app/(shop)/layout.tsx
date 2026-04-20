@@ -1,4 +1,4 @@
-import { Footer, Sidebar, TopMenu } from '@/src/components';
+import { Chatbot, Footer, Sidebar, TopMenu } from '@/src/components';
 
 export default function ShopLayout({
   children,
@@ -10,6 +10,7 @@ export default function ShopLayout({
       <TopMenu />
       <Sidebar />
       <div className="flex-1 px-0 sm:px-10">{children}</div>
+      <Chatbot />
       <Footer />
     </main>
   );

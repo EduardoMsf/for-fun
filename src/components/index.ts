@@ -13,3 +13,4 @@ export * from './ui/pagination/Pagination';
 export * from './provider/Provider';
 export * from './paypal/PaypalButton';
 export * from './order/OrderStatus';
+export * from './ui/chatbot/Chatbot';

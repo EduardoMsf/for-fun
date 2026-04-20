@@ -150,21 +150,24 @@ export const Sidebar = () => {
         {isAdmin && (
           <>
             <Link
-              href="/"
+              href="/admin/products"
+              onClick={closeSideMenu}
               className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
             >
               <IoShirtOutline size={25} />
               <span className="text-lg ml-3">Products</span>
             </Link>
             <Link
-              href="/"
+              href="/admin/orders"
+              onClick={closeSideMenu}
               className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
             >
               <IoTicketOutline size={25} />
               <span className="text-lg ml-3">Orders</span>
             </Link>
             <Link
-              href="/"
+              href="/admin/users"
+              onClick={closeSideMenu}
               className="flex items-center mt-10 p-2 rounded transition-all hover:bg-white/15"
             >
               <IoPeopleOutline size={25} />

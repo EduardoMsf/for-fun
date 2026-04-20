@@ -9,7 +9,7 @@ import { Swiper as SwiperObject } from 'swiper';
 import './slideshow.css';
 
 interface Props {
-  images: string[];
+  images: { url: string; id: number }[];
   title: string;
   className?: string;
 }
@@ -35,9 +35,9 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
         className="mySwiper2"
       >
         {images.map((image) => (
-          <SwiperSlide key={image}>
+          <SwiperSlide key={image.id}>
             <Image
-              src={`/products/${image}`}
+              src={`/products/${image.url}`}
               alt={title}
               width={1024}
               height={800}
@@ -57,9 +57,9 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
         className="mySwiper"
       >
         {images.map((image) => (
-          <SwiperSlide key={image}>
+          <SwiperSlide key={image.id}>
             <Image
-              src={`/products/${image}`}
+              src={`/products/${image.url}`}
               alt={title}
               width={300}
               height={300}

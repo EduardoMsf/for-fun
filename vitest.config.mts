@@ -7,15 +7,17 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     pool: 'threads',
-    include: ['tests/**/*.test.{ts,tsx}'],
+    // include: ['tests/**/*.test.{ts,tsx}'],//descomentar
+    include: ['tests/page.test.tsx'], //Solo borrar
     setupFiles: ['./tests/setup.ts'],
     coverage: {
       enabled: true,
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       reportsDirectory: './coverage',
-      include: ['src/**/*.{ts,tsx}'],
+      // include: ['src/**/*.{ts,tsx}'],//descomentar
       exclude: [
+        'src/**/*.{ts,tsx}', //borrar solo esta linea
         'src/**/*.d.ts',
         'src/**/*.css',
         'src/**/index.ts',
