@@ -6,7 +6,8 @@
   "scripts": {
     "dev:turbo": "next dev",
     "dev": "next dev --webpack",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate",
+    "build": "prisma migrate deploy && next build",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
