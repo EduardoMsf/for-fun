@@ -6,7 +6,6 @@
   "scripts": {
     "dev:turbo": "next dev",
     "dev": "next dev --webpack",
-    "postinstall": "prisma generate",
     "build": "prisma migrate deploy && next build",
     "start": "next start",
     "test": "vitest run",
