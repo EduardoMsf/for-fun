@@ -20,7 +20,7 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "seed": "tsx src/seed/seed-database.ts",
-    "prisma:deploy": "npx prisma migrate deploy && prisma generate"
+    "prisma:deploy": "npx prisma migrate deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",
