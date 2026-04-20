@@ -46,7 +46,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          DATABASE_URL: 'postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public'
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -54,6 +54,7 @@ jobs:
       - name: Pull, Build & Deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CI: true
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
