@@ -25,7 +25,7 @@ export const ProductGridItem = ({ product, priority = false }: Props) => {
 
   // 2. Determinamos la imagen a mostrar basándonos en si hay hover o no
   // Si no hay hover, usamos directamente la primera imagen del array (evita delay de hidratación)
-  const currentImage = hoverImage || product.images[0];
+  const currentImage = hoverImage || product.images[0].url;
 
   return (
     <div className={`rounded-md overflow-hidden ${priority ? '' : 'fade-in'}`}>
