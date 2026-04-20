@@ -55,6 +55,7 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }} 
           CI: true
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
