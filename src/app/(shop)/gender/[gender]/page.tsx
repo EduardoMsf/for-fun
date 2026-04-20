@@ -6,11 +6,6 @@ import { initialData } from '@/src/seed/seed';
 import { getPaginatedProductsWithImages } from '@/src/actions';
 import { redirect } from 'next/navigation';
 
-const products: Product[] = initialData.products.map((product) => ({
-  ...product,
-  id: product.slug,
-}));
-
 const categoryLabels = {
   men: 'Hombres',
   women: 'Mujeres',
@@ -35,13 +30,10 @@ function getCategoryLabel(gender: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { gender } = await params;
   const categoryLabel = getCategoryLabel(gender);
-  const totalProducts = products.filter(
-    (product) => product.gender === gender,
-  ).length;
 
   return {
     title: `${categoryLabel} | Tienda`,
-    description: `Explora ${totalProducts} productos de la categoria ${categoryLabel.toLowerCase()} disponibles en la tienda.`,
+    description: `Explora productos de la categoría ${categoryLabel.toLowerCase()}.`,
   };
 }
 

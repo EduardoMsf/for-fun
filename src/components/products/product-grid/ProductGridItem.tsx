@@ -39,7 +39,7 @@ export const ProductGridItem = ({ product, priority = false }: Props) => {
           width={500}
           height={500}
           onMouseEnter={() =>
-            setHoverImage(product.images[1] || product.images[0])
+            setHoverImage(product.images[1].url || product.images[0].url)
           }
           onMouseLeave={() => setHoverImage(null)}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -4,9 +4,9 @@ import { redirect } from 'next/navigation';
 import { ProductForm } from './ui/ProductForm';
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function ProductPage({ params }: Props) {

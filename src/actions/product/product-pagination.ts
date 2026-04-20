@@ -29,6 +29,7 @@ export const getPaginatedProductsWithImages = async ({
           take: 2,
           select: {
             url: true,
+            id: true,
           },
         },
       },
@@ -45,7 +46,10 @@ export const getPaginatedProductsWithImages = async ({
 
         return {
           ...rest,
-          images: productImages.map((image) => image.url),
+          images: productImages.map((image) => ({
+            url: image.url,
+            id: image.id,
+          })),
           sizes: size,
         };
       }),
