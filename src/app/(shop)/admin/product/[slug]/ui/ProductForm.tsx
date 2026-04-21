@@ -1,14 +1,16 @@
 'use client';
 
-import { createUpdateProduct } from '@/src/actions';
+import { createUpdateProduct, deleteProductImage } from '@/src/actions';
+import { ProductImage } from '@/src/components';
 import { Categories, Product, Size } from '@/src/interfaces';
 import clsx from 'clsx';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { useForm } from 'react-hook-form';
 
 interface Props {
-  product: Product;
+  product: Partial<Product>;
   categories: Categories[];
 }
 
@@ -24,9 +26,11 @@ interface FormInputs {
   tags: string;
   gender: 'men' | 'women' | 'kid' | 'unisex';
   categoryId: string;
+  images?: FileList;
 }
 
 export const ProductForm = ({ product, categories }: Props) => {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -38,8 +42,9 @@ export const ProductForm = ({ product, categories }: Props) => {
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
-      tags: product.tags.join(', '),
+      tags: product.tags?.join(', ') ?? '',
       sizes: product.sizes ?? [],
+      images: undefined,
     },
   });
 
@@ -48,8 +53,11 @@ export const ProductForm = ({ product, categories }: Props) => {
   const onSubmit = async (data: FormInputs) => {
     console.log(data);
     const formData = new FormData();
-    const { ...productToSave } = data;
-    formData.append('id', product.id ?? '');
+    const { images, ...productToSave } = data;
+    if (product.id) {
+      formData.append('id', product.id ?? '');
+    }
+
     formData.append('title', productToSave.title ?? '');
     formData.append('slug', productToSave.slug ?? '');
     formData.append('description', productToSave.description ?? '');
@@ -60,8 +68,22 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append('categoryId', productToSave.categoryId ?? '');
     formData.append('gender', productToSave.gender ?? '');
 
-    const resp = await createUpdateProduct(formData);
-    console.log('resp', resp);
+    if (images) {
+      for (let i = 0; i < images.length; i++) {
+        formData.append('images', images[i]);
+      }
+      // for (let image of images) {
+      //   formData.append('images', image);
+      // }
+    }
+
+    const { ok } = await createUpdateProduct(formData);
+
+    if (!ok) {
+      alert('Error al guardar el producto');
+    }
+
+    router.replace(`/admin/product/${product?.slug}`);
   };
 
   const onSizeChange = (size: string) => {
@@ -163,6 +185,14 @@ export const ProductForm = ({ product, categories }: Props) => {
       {/* Selector de tallas y fotos */}
       <div className="w-full">
         {/* As checkboxes */}
+        <div className="flex flex-col mb-2">
+          <span>Stock</span>
+          <input
+            type="number"
+            className="p-2 border rounded-md bg-gray-200"
+            {...register('inStock', { required: true, min: 0 })}
+          />
+        </div>
         <div className="flex flex-col">
           <span>Tallas</span>
           <div className="flex flex-wrap">
@@ -189,14 +219,15 @@ export const ProductForm = ({ product, categories }: Props) => {
               type="file"
               multiple
               className="p-2 border rounded-md bg-gray-200"
-              accept="image/png, image/jpeg"
+              accept="image/png, image/jpeg, image/avif"
+              {...register('images')}
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {product.images.map((image) => (
+            {product.images?.map((image) => (
               <div key={image.id}>
-                <Image
-                  src={`/products/${image.url}`}
+                <ProductImage
+                  src={image.url}
                   width={300}
                   height={300}
                   alt="Imagen del product"
@@ -205,7 +236,7 @@ export const ProductForm = ({ product, categories }: Props) => {
 
                 <button
                   type="button"
-                  onClick={() => console.log(image.id, image.url)}
+                  onClick={() => deleteProductImage(image.id, image.url)}
                   className="btn-danger mt-2 w-full rounded-b-xl"
                 >
                   Remove

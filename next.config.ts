@@ -11,4 +11,14 @@ const nextConfig: NextConfig = {
       './node_modules/@prisma/engines/**/*',
     ],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+    ],
+  },
 };
+
+export default nextConfig;

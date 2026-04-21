@@ -25,7 +25,16 @@ export const ProductGridItem = ({ product, priority = false }: Props) => {
 
   // 2. Determinamos la imagen a mostrar basándonos en si hay hover o no
   // Si no hay hover, usamos directamente la primera imagen del array (evita delay de hidratación)
-  const currentImage = hoverImage || product.images[0].url;
+  const currentImage = hoverImage || product.images[0]?.url;
+
+  const getImageUrl = (image: string) => {
+    // Si la imagen ya es una URL completa (Cloudinary), la devolvemos tal cual
+    if (image.startsWith('http')) {
+      return image;
+    }
+    // Si no, asumimos que es una imagen local en la carpeta /products/
+    return `/products/${image}`;
+  };
 
   return (
     <div className={`rounded-md overflow-hidden ${priority ? '' : 'fade-in'}`}>
@@ -34,12 +43,14 @@ export const ProductGridItem = ({ product, priority = false }: Props) => {
           priority={priority}
           fetchPriority={priority ? 'high' : 'auto'}
           className="w-full object-cover rounded"
-          src={`/products/${currentImage}`}
+          src={
+            currentImage ? getImageUrl(currentImage) : '/imgs/placeholder.jpg'
+          }
           alt={product.title}
           width={500}
           height={500}
           onMouseEnter={() =>
-            setHoverImage(product.images[1].url || product.images[0].url)
+            setHoverImage(product.images[1]?.url || product.images[0]?.url)
           }
           onMouseLeave={() => setHoverImage(null)}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

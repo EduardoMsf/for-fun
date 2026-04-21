@@ -3,7 +3,7 @@ import {
   getPaginatedOrders,
   getPaginatedProductsWithImages,
 } from '@/src/actions';
-import { Pagination, Title } from '@/src/components';
+import { Pagination, ProductImage, Title } from '@/src/components';
 import { currencyFormatted } from '@/src/utils';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -84,12 +84,11 @@ export default async function ProductsAdminPage({ searchParams }: Props) {
               >
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   <Link href={`/product/${product.slug}`}>
-                    <Image
-                      src={`/products/${product.images[0]}`}
+                    <ProductImage
+                      src={product.images[0]?.url}
+                      alt={product.title}
                       width={80}
                       height={80}
-                      alt={product.title}
-                      className="w-20 h-20 object-cover rounded"
                     />
                   </Link>
                 </td>
