@@ -47,6 +47,7 @@ jobs:
         run: npx prisma generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
 
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -56,6 +57,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }} 
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
           CI: true
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
