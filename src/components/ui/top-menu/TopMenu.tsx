@@ -48,7 +48,7 @@ export const TopMenu = () => {
 
       <div className="flex items-center">
         <Link
-          href="/search"
+          href="/"
           className="m-2 p-2 rounded-md transition-all text-sm font-medium hover:bg-gray-100"
         >
           <IoSearchOutline className="w-5 h-5" />
