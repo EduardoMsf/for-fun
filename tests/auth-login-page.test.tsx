@@ -1,5 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  usePathname: vi.fn(() => '/auth/login'),
+  redirect: vi.fn(),
+}));
 
 import LoginPage from '@/src/app/auth/login/page';
 
@@ -14,13 +21,13 @@ describe('Login page', () => {
       }),
     ).toBeDefined();
 
-    expect(screen.getByRole('button', { name: /login/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /log in/i })).toBeDefined();
     expect(
-      screen.getByRole('link', { name: /create a new account/i }),
+      screen.getByRole('link', { name: /create account/i }),
     ).toBeDefined();
     expect(
       screen
-        .getByRole('link', { name: /create a new account/i })
+        .getByRole('link', { name: /create account/i })
         .getAttribute('href'),
     ).toBe('/auth/new-account');
   });

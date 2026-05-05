@@ -4,7 +4,6 @@ import { Pagination, ProductGrid, Title } from '@/src/components';
 import type { Category, Product } from '@/src/interfaces';
 import { initialData } from '@/src/seed/seed';
 import { getPaginatedProductsWithImages } from '@/src/actions';
-import { redirect } from 'next/navigation';
 
 const categoryLabels = {
   men: 'Hombres',
@@ -54,10 +53,6 @@ export default async function CategoryPage({
   const productByCategory = products.filter(
     (product) => product.gender === gender,
   );
-
-  if (products.length === 0) {
-    redirect(`/gender/${gender}`);
-  }
 
   return (
     <div className="flex flex-col flex-1 justify-center font-sans ">

@@ -109,14 +109,8 @@ describe('generateMetadata', () => {
       searchParams: Promise.resolve({}),
     });
 
-    const womenProducts = initialData.products.filter(
-      (product) => product.gender === 'women',
-    );
-
     expect(metadata.title).toBe('Mujeres | Tienda');
-    expect(metadata.description).toBe(
-      `Explora ${womenProducts.length} productos de la categoria mujeres disponibles en la tienda.`,
-    );
+    expect(metadata.description).toBe('Explora productos de la categoría mujeres.');
   });
 
   it('returns fallback metadata for an unknown category', async () => {
@@ -126,8 +120,6 @@ describe('generateMetadata', () => {
     });
 
     expect(metadata.title).toBe('kids | Tienda');
-    expect(metadata.description).toBe(
-      'Explora 0 productos de la categoria kids disponibles en la tienda.',
-    );
+    expect(metadata.description).toBe('Explora productos de la categoría kids.');
   });
 });

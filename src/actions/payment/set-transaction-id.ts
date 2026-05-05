@@ -1,31 +1,19 @@
 'use server';
 
-import { prisma } from '@/src/lib/prisma';
+import { auth } from '@/src/auth.config';
+import { apiFetch } from '@/src/lib/api';
 
-export const setTransactionId = async (
-  orderId: string,
-  transactionId: string,
-) => {
+export const setTransactionId = async (orderId: string, transactionId: string) => {
+  const session = await auth();
   try {
-    const order = await prisma.order.update({
-      where: { id: orderId },
-      data: { transactionId: transactionId },
-    });
-
-    if (!order) {
-      return {
-        ok: false,
-        message: `No se encontró una orden con el ${orderId}`,
-      };
-    }
-
+    await apiFetch(
+      `/orders/${orderId}/transaction`,
+      { method: 'PATCH', body: JSON.stringify({ transactionId }) },
+      session?.accessToken,
+    );
     return { ok: true };
   } catch (error) {
     console.log(error);
-
-    return {
-      ok: false,
-      message: 'No se pudo actualizar el id de la transacción',
-    };
+    return { ok: false, message: 'No se pudo actualizar el id de la transacción' };
   }
 };

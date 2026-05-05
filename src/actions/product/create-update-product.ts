@@ -1,8 +1,7 @@
 'use server';
 
-import { Gender } from '@/src/generated/prisma/enums';
-import { prisma } from '@/src/lib/prisma';
-import { Product, Size } from '@prisma/client';
+import { auth } from '@/src/auth.config';
+import { apiFetch } from '@/src/lib/api';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { v2 as cloudinary } from 'cloudinary';
@@ -24,92 +23,74 @@ const productSchema = z.object({
   categoryId: z.string().uuid(),
   sizes: z.coerce.string().transform((val) => val.split(',')),
   tags: z.string(),
-  gender: z.nativeEnum(Gender),
+  gender: z.enum(['men', 'women', 'kid', 'unisex']),
 });
 
 export const createUpdateProduct = async (formData: FormData) => {
+  const session = await auth();
   const data = Object.fromEntries(formData);
   const productParsed = productSchema.safeParse(data);
+
   if (!productParsed.success) {
     console.log(productParsed.error);
-    return {
-      ok: false,
-    };
+    return { ok: false };
   }
 
   const product = productParsed.data;
   product.slug = product.slug.toLowerCase().replaceAll(' ', '-').trim();
 
   const { id, sizes, categoryId, ...productData } = product;
+  const tagsArray = productData.tags.split(',').map((tag) => tag.trim().toLowerCase());
+
   try {
-    const prismaTx = await prisma.$transaction(async (tx) => {
-      let product: Product;
-      const tagsArray = productData.tags
-        .split(',')
-        .map((tag) => tag.trim().toLowerCase());
-      if (id) {
-        product = await tx.product.update({
-          where: { id: id },
-          data: {
-            ...productData,
-            category: {
-              connect: { id: categoryId },
-            },
-            size: {
-              set: sizes as Size[],
-            },
-            tags: {
-              set: tagsArray,
-            },
-          },
-        });
-        console.log(product);
-      } else {
-        product = await tx.product.create({
-          data: {
-            ...productData,
-            tags: productData.tags.split(',').map((tag) => tag.trim()),
+    const payload = {
+      ...productData,
+      tags: tagsArray,
+      size: sizes,
+      categoryId,
+    };
 
-            category: {
-              connect: { id: categoryId },
-            },
-            size: {
-              set: sizes as Size[],
-            },
-          },
-        });
-      }
+    let savedProduct: { id: string; slug: string };
 
-      if (formData.getAll('images')) {
-        console.log(formData.getAll('images'));
-        const images = await uploadImages(formData.getAll('images') as File[]);
-        if (!images) {
-          throw new Error('Error uploading images');
-        }
-        await tx.productImage.createMany({
-          data: images.map((image) => ({
-            url: image!,
-            productId: product.id,
-          })),
-        });
-      }
+    if (id) {
+      savedProduct = await apiFetch<{ id: string; slug: string }>(
+        `/products/${id}`,
+        { method: 'PATCH', body: JSON.stringify(payload) },
+        session?.accessToken,
+      );
+    } else {
+      savedProduct = await apiFetch<{ id: string; slug: string }>(
+        '/products',
+        { method: 'POST', body: JSON.stringify(payload) },
+        session?.accessToken,
+      );
+    }
 
-      return { product };
-    });
+    // Upload images to Cloudinary then register in API
+    const imageFiles = formData.getAll('images') as File[];
+    if (imageFiles.length > 0) {
+      const urls = await uploadImages(imageFiles);
+      if (!urls) throw new Error('Error uploading images');
+
+      await Promise.all(
+        urls.filter(Boolean).map((url) =>
+          apiFetch(
+            '/product-images',
+            { method: 'POST', body: JSON.stringify({ url, productId: savedProduct.id }) },
+            session?.accessToken,
+          ),
+        ),
+      );
+    }
 
     revalidatePath('/admin/products');
-    revalidatePath(`/admin/products/${product.slug}`);
-    revalidatePath(`/products/${product.slug}`);
-    return {
-      ok: true,
-      product: prismaTx.product,
-    };
+    revalidatePath(`/admin/products/${savedProduct.slug}`);
+    revalidatePath(`/products/${savedProduct.slug}`);
+
+    return { ok: true, product: savedProduct };
   } catch (error) {
     console.error('Error creating/updating product:', error);
-    return {
-      ok: false,
-      message: 'Check the server logs for more details',
-    };
+    return { ok: false, message: 'Check the server logs for more details' };
   }
 };
 
@@ -119,7 +100,6 @@ const uploadImages = async (images: File[]) => {
       try {
         const buffer = await image.arrayBuffer();
         const base64Image = Buffer.from(buffer).toString('base64');
-
         return cloudinary.uploader
           .upload(`data:image/png;base64,${base64Image}`)
           .then((r) => r.secure_url);

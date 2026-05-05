@@ -5,15 +5,17 @@ import { ProductGridItem } from '@/src/components';
 import type { Product } from '@/src/interfaces';
 
 const baseProduct: Product = {
+  id: 'p1',
   description: 'Warm hoodie',
-  images: ['front.jpg', 'back.jpg'],
+  images: [
+    { url: 'front.jpg', id: 1 },
+    { url: 'back.jpg', id: 2 },
+  ],
   inStock: 5,
   price: 49.99,
   sizes: ['S', 'M', 'L'],
   slug: 'warm-hoodie',
   tags: ['hoodie'],
-  title: 'Warm Hoodie',
-  type: 'hoodies',
   gender: 'unisex',
 };
 
@@ -36,9 +38,8 @@ describe('ProductGridItem', () => {
   // });
 
   it('switches to the secondary image on hover and restores the primary image', () => {
-    render(<ProductGridItem product={baseProduct} />);
-
-    const image = screen.getByAltText('Warm Hoodie');
+    const { container } = render(<ProductGridItem product={baseProduct} />);
+    const image = container.querySelector('img')!;
 
     fireEvent.mouseEnter(image);
     expect(image.getAttribute('src')).toBe('/products/back.jpg');
@@ -48,11 +49,10 @@ describe('ProductGridItem', () => {
   });
 
   it('keeps the primary image when there is no secondary image', () => {
-    render(
-      <ProductGridItem product={{ ...baseProduct, images: ['front.jpg'] }} />,
+    const { container } = render(
+      <ProductGridItem product={{ ...baseProduct, images: [{ url: 'front.jpg', id: 1 }] }} />,
     );
-
-    const image = screen.getByAltText('Warm Hoodie');
+    const image = container.querySelector('img')!;
 
     fireEvent.mouseEnter(image);
 

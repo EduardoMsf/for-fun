@@ -1,12 +1,10 @@
 'use server';
 
-import { prisma } from '@/src/lib/prisma';
+import { apiFetch } from '@/src/lib/api';
 
 export const getCategories = async () => {
   try {
-    const categories = await prisma.category.findMany({});
-
-    return categories;
+    return await apiFetch<{ id: string; name: string }[]>('/categories');
   } catch (error) {
     console.log(error);
     return [];

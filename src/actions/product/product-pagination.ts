@@ -1,7 +1,9 @@
 'use server';
 
-import { Gender } from '@/src/generated/prisma/enums';
-import { prisma } from '@/src/lib/prisma';
+import type { Product } from '@/src/interfaces';
+import { apiFetch } from '@/src/lib/api';
+
+type Gender = 'men' | 'women' | 'kid' | 'unisex';
 
 interface PaginationOptions {
   page?: number;
@@ -16,45 +18,15 @@ export const getPaginatedProductsWithImages = async ({
 }: PaginationOptions = {}) => {
   if (isNaN(Number(page))) page = 1;
   if (page < 1) page = 1;
+
+  const params = new URLSearchParams({ page: String(page), take: String(take) });
+  if (gender) params.set('gender', gender);
+
   try {
-    const where = {
-      gender,
-    };
-
-    const products = await prisma.product.findMany({
-      take,
-      skip: (page - 1) * take,
-      include: {
-        productImages: {
-          take: 2,
-          select: {
-            url: true,
-            id: true,
-          },
-        },
-      },
-      where,
-    });
-
-    const totalCount = await prisma.product.count({ where });
-    const totalPages = Math.ceil(totalCount / take);
-    return {
-      currentPage: page,
-      totalPages: totalPages,
-      products: products.map((product) => {
-        const { productImages, size, ...rest } = product;
-
-        return {
-          ...rest,
-          images: productImages.map((image) => ({
-            url: image.url,
-            id: image.id,
-          })),
-          sizes: size,
-        };
-      }),
-    };
-  } catch (error) {
+    return await apiFetch<{ currentPage: number; totalPages: number; products: Product[] }>(
+      `/products?${params}`,
+    );
+  } catch {
     throw new Error('Products are not available');
   }
 };

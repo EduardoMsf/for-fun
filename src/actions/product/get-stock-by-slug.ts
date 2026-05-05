@@ -1,22 +1,15 @@
 'use server';
-import { prisma } from '@/src/lib/prisma';
+
 import { unstable_noStore as noStore } from 'next/cache';
+import { apiFetch } from '@/src/lib/api';
 
 export const getStockBySlug = async (slug: string): Promise<number> => {
   noStore();
   try {
-    const stock = await prisma.product.findFirst({
-      select: {
-        inStock: true,
-      },
-      where: {
-        slug,
-      },
-    });
-
-    return stock?.inStock ?? 0;
+    const { inStock } = await apiFetch<{ inStock: number }>(`/products/slug/${slug}/stock`);
+    return inStock;
   } catch (error) {
     console.log(error);
-    throw new Error(`Error al obtener stock por slug`);
+    return 0;
   }
 };
