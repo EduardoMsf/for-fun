@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { initialData } from '@/src/seed/seed';
 
@@ -12,9 +12,28 @@ vi.mock('next/navigation', () => ({
   notFound: () => mockNotFound(),
 }));
 
+vi.mock('@/src/actions', async () => {
+  const { initialData: seed } = await import('@/src/seed/seed');
+  return {
+    getProductBySlug: vi.fn((slug: string) => {
+      const seedProduct = seed.products.find((p) => p.slug === slug);
+      if (!seedProduct) return Promise.resolve(null);
+      return Promise.resolve({
+        ...seedProduct,
+        id: 'test-id',
+        images: seedProduct.images.map((url, id) => ({ url, id })),
+      });
+    }),
+  };
+});
+
 import ProductPage from '@/src/app/(shop)/product/[slug]/page';
 
 describe('Product page', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders the selected product details', async () => {
     const product = initialData.products[0];
 
