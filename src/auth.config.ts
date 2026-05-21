@@ -2,8 +2,6 @@ import type { NextAuthConfig } from 'next-auth';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
-import { prisma } from './lib/prisma';
-import bcryptjs from 'bcryptjs';
 
 export const authConfig = {
   providers: [
@@ -17,19 +15,24 @@ export const authConfig = {
 
         const { email, password } = parsedCredentials.data;
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: email.toLowerCase(),
-          },
-        });
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'}/auth/login`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password }),
+              cache: 'no-store',
+            },
+          );
 
-        if (!user) return null;
+          if (!res.ok) return null;
 
-        if (!bcryptjs.compareSync(password, user.password)) return null;
-
-        const { password: _, ...rest } = user;
-
-        return rest;
+          const { token, user } = await res.json();
+          return { ...user, accessToken: token };
+        } catch {
+          return null;
+        }
       },
     }),
   ],
@@ -41,22 +44,16 @@ export const authConfig = {
     jwt({ token, user }) {
       if (user) {
         token.data = user;
+        token.accessToken = (user as Record<string, unknown>)['accessToken'];
       }
       return token;
     },
-    session({ session, token, user }) {
-      session.user = token.data as any;
+    session({ session, token }) {
+      session.user = token.data as typeof session.user;
+      session.accessToken = token.accessToken as string;
       return session;
     },
-    authorized({ auth, request: { nextUrl } }) {
-      // const isLoggedIn = !!auth?.user;
-      // const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      // if (isOnDashboard) {
-      //   if (isLoggedIn) return true;
-      //   return false; // Redirect unauthenticated users to login page
-      // } else if (isLoggedIn) {
-      //   return Response.redirect(new URL('/dashboard', nextUrl));
-      // }
+    authorized() {
       return true;
     },
   },

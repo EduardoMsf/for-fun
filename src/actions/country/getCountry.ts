@@ -1,16 +1,11 @@
 'use server';
 
-import { prisma } from '@/src/lib/prisma';
+import { apiFetch } from '@/src/lib/api';
 
 export const getCountries = async () => {
   try {
-    const countriesDB = await prisma.country.findMany({
-      orderBy: {
-        name: 'asc',
-      },
-    });
-
-    return countriesDB;
+    const countries = await apiFetch<{ id: string; name: string }[]>('/countries?orderBy=name');
+    return countries;
   } catch (error) {
     console.log(error);
     return [];

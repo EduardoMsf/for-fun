@@ -2,7 +2,6 @@ export const revalidate = 60;
 
 import { getPaginatedProductsWithImages } from '@/src/actions';
 import { Title, ProductGrid, Pagination } from '@/src/components';
-import { redirect } from 'next/navigation';
 
 interface Props {
   searchParams: Promise<{
@@ -18,10 +17,6 @@ export default async function Home({ searchParams }: Props) {
 
   const { products, currentPage, totalPages } =
     await getPaginatedProductsWithImages({ page, take });
-
-  if (products.length === 0) {
-    redirect('/');
-  }
 
   return (
     <div className="flex flex-col flex-1 justify-center font-sans ">

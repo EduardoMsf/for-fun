@@ -1,16 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockFindMany = vi.fn();
-const mockCount = vi.fn();
+const mockApiFetch = vi.fn();
 
-vi.mock('@/src/lib/prisma', () => ({
-  prisma: {
-    product: {
-      findMany: (...args: unknown[]) => mockFindMany(...args),
-      count: (...args: unknown[]) => mockCount(...args),
-    },
-  },
+vi.mock('@/src/lib/api', () => ({
+  apiFetch: (...args: unknown[]) => mockApiFetch(...args),
 }));
+
+vi.mock('next/cache', () => ({ unstable_noStore: vi.fn(), revalidatePath: vi.fn() }));
 
 import { getPaginatedProductsWithImages } from '@/src/actions';
 
@@ -19,132 +15,62 @@ describe('getPaginatedProductsWithImages', () => {
     vi.clearAllMocks();
   });
 
-  it('uses default pagination values and maps prisma fields into product cards', async () => {
-    mockFindMany.mockResolvedValue([
-      {
-        id: 'p1',
-        title: 'Test product',
-        slug: 'test-product',
-        description: 'desc',
-        inStock: 5,
-        price: 25,
-        size: ['M', 'L'],
-        tags: ['shirt'],
-        gender: 'men',
-        productImages: [{ url: 'a.jpg' }, { url: 'b.jpg' }],
-      },
-    ]);
-    mockCount.mockResolvedValue(24);
+  it('calls apiFetch with default page=1 and take=12', async () => {
+    mockApiFetch.mockResolvedValue({ currentPage: 1, totalPages: 5, products: [] });
 
-    const result = await getPaginatedProductsWithImages();
+    await getPaginatedProductsWithImages();
 
-    expect(mockFindMany).toHaveBeenCalledWith({
-      take: 12,
-      skip: 0,
-      include: {
-        productImages: {
-          take: 2,
-          select: {
-            url: true,
-          },
-        },
-      },
-      where: {
-        gender: undefined,
-      },
-    });
-    expect(mockCount).toHaveBeenCalledWith({
-      where: {
-        gender: undefined,
-      },
-    });
-    expect(result).toEqual({
-      currentPage: 1,
-      totalPages: 2,
-      products: [
-        {
-          id: 'p1',
-          title: 'Test product',
-          slug: 'test-product',
-          description: 'desc',
-          inStock: 5,
-          price: 25,
-          tags: ['shirt'],
-          gender: 'men',
-          images: ['a.jpg', 'b.jpg'],
-          sizes: ['M', 'L'],
-        },
-      ],
-    });
+    expect(mockApiFetch).toHaveBeenCalledWith('/products?page=1&take=12');
   });
 
-  it('normalizes invalid page values and applies gender and take filters', async () => {
-    mockFindMany.mockResolvedValue([]);
-    mockCount.mockResolvedValue(3);
+  it('returns the apiFetch response directly', async () => {
+    const payload = {
+      currentPage: 2,
+      totalPages: 4,
+      products: [{ id: 'p1', title: 'Shirt', slug: 'shirt' }],
+    };
+    mockApiFetch.mockResolvedValue(payload);
 
-    const result = await getPaginatedProductsWithImages({
-      page: -2,
-      take: 3,
-      gender: 'kid',
-    });
+    const result = await getPaginatedProductsWithImages({ page: 2, take: 12 });
 
-    expect(mockFindMany).toHaveBeenCalledWith({
-      take: 3,
-      skip: 0,
-      include: {
-        productImages: {
-          take: 2,
-          select: {
-            url: true,
-          },
-        },
-      },
-      where: {
-        gender: 'kid',
-      },
-    });
-    expect(mockCount).toHaveBeenCalledWith({
-      where: {
-        gender: 'kid',
-      },
-    });
-    expect(result.currentPage).toBe(1);
-    expect(result.totalPages).toBe(1);
-    expect(result.products).toEqual([]);
+    expect(result).toEqual(payload);
   });
 
-  it('uses the sanitized page to calculate skip', async () => {
-    mockFindMany.mockResolvedValue([]);
-    mockCount.mockResolvedValue(50);
+  it('normalizes page < 1 to 1', async () => {
+    mockApiFetch.mockResolvedValue({ currentPage: 1, totalPages: 1, products: [] });
 
-    await getPaginatedProductsWithImages({
-      page: 3,
-      take: 10,
-      gender: 'women',
-    });
+    await getPaginatedProductsWithImages({ page: -5 });
 
-    expect(mockFindMany).toHaveBeenCalledWith({
-      take: 10,
-      skip: 20,
-      include: {
-        productImages: {
-          take: 2,
-          select: {
-            url: true,
-          },
-        },
-      },
-      where: {
-        gender: 'women',
-      },
-    });
+    expect(mockApiFetch).toHaveBeenCalledWith('/products?page=1&take=12');
   });
 
-  it('throws a friendly error when prisma fails', async () => {
-    mockFindMany.mockRejectedValue(new Error('db failed'));
+  it('normalizes NaN page to 1', async () => {
+    mockApiFetch.mockResolvedValue({ currentPage: 1, totalPages: 1, products: [] });
 
-    await expect(getPaginatedProductsWithImages()).rejects.toThrow(
-      'Products are not available',
-    );
+    await getPaginatedProductsWithImages({ page: NaN });
+
+    expect(mockApiFetch).toHaveBeenCalledWith('/products?page=1&take=12');
+  });
+
+  it('passes gender as a query param when provided', async () => {
+    mockApiFetch.mockResolvedValue({ currentPage: 1, totalPages: 2, products: [] });
+
+    await getPaginatedProductsWithImages({ page: 1, take: 6, gender: 'women' });
+
+    expect(mockApiFetch).toHaveBeenCalledWith('/products?page=1&take=6&gender=women');
+  });
+
+  it('calculates skip correctly for page > 1', async () => {
+    mockApiFetch.mockResolvedValue({ currentPage: 3, totalPages: 5, products: [] });
+
+    await getPaginatedProductsWithImages({ page: 3, take: 10 });
+
+    expect(mockApiFetch).toHaveBeenCalledWith('/products?page=3&take=10');
+  });
+
+  it('throws "Products are not available" when apiFetch rejects', async () => {
+    mockApiFetch.mockRejectedValue(new Error('network error'));
+
+    await expect(getPaginatedProductsWithImages()).rejects.toThrow('Products are not available');
   });
 });

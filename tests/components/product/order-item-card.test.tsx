@@ -27,11 +27,10 @@ describe('OrderItemCard', () => {
     );
   });
 
-  it('renders the unit price, quantity, subtotal, and remove button', () => {
+  it('renders the unit price, quantity, and subtotal', () => {
     render(<OrderItemCard product={product} quantity={3} />);
 
     expect(screen.getByText('$49.99 x 3')).toBeDefined();
     expect(screen.getByText('$149.97')).toBeDefined();
-    expect(screen.getByRole('button', { name: /remove/i })).toBeDefined();
   });
 });

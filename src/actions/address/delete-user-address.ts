@@ -1,24 +1,15 @@
 'use server';
 
-import { prisma } from '@/src/lib/prisma';
+import { apiFetch } from '@/src/lib/api';
+import { auth } from '@/src/auth.config';
 
 export const deleteUserAddress = async (userId: string) => {
+  const session = await auth();
   try {
-    await prisma.userAddress.delete({
-      where: {
-        userId,
-      },
-    });
-
-    return {
-      ok: true,
-    };
+    await apiFetch(`/user-addresses/user/${userId}`, { method: 'DELETE' }, session?.accessToken);
+    return { ok: true };
   } catch (error) {
     console.log(error);
-
-    return {
-      ok: false,
-      message: 'Something went wrong',
-    };
+    return { ok: false, message: 'Something went wrong' };
   }
 };

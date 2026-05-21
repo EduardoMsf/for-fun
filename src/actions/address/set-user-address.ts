@@ -1,63 +1,32 @@
 'use server';
 
 import { Address } from '@/src/interfaces';
-import { prisma } from '@/src/lib/prisma';
+import { apiFetch } from '@/src/lib/api';
+import { auth } from '@/src/auth.config';
 
 export const setUserAddres = async (address: Address, userId: string) => {
+  const session = await auth();
   try {
-    const newAddress = await createOrReplaceAddres(address, userId);
-
-    return {
-      ok: true,
-      address: newAddress,
-    };
+    const newAddress = await apiFetch(
+      `/user-addresses/user/${userId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          firstName: address.firstName,
+          lastName: address.lastName,
+          address: address.address,
+          address2: address.address2,
+          postalCode: address.postalCode,
+          phone: address.phone,
+          city: address.city,
+          countryId: address.country,
+        }),
+      },
+      session?.accessToken,
+    );
+    return { ok: true, address: newAddress };
   } catch (error) {
     console.log(error);
-    return {
-      ok: false,
-      messsage: 'Something went wrong',
-    };
-  }
-};
-
-const createOrReplaceAddres = async (address: Address, userId: string) => {
-  try {
-    const storedAddres = await prisma.userAddress.findUnique({
-      where: {
-        userId,
-      },
-    });
-
-    const addressToSave = {
-      address: address.address,
-      address2: address.address2,
-      userId: userId,
-      countryId: address.country,
-      firstName: address.firstName,
-      lastName: address.lastName,
-      phone: address.phone,
-      postalCode: address.postalCode,
-      city: address.city,
-    };
-
-    if (!storedAddres) {
-      const newAddress = await prisma.userAddress.create({
-        data: addressToSave,
-      });
-
-      return newAddress;
-    }
-
-    const updatedAddress = await prisma.userAddress.update({
-      where: {
-        userId: userId,
-      },
-      data: addressToSave,
-    });
-
-    return updatedAddress;
-  } catch (error) {
-    console.log(error);
-    throw new Error('Cannot set address');
+    return { ok: false, messsage: 'Something went wrong' };
   }
 };

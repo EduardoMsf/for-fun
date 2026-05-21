@@ -1,11 +1,43 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+
+const mockAuth = vi.fn();
+const mockGetCountries = vi.fn();
+const mockGetUserAddress = vi.fn();
+
+vi.mock('@/src/auth.config', () => ({
+  auth: (...args: unknown[]) => mockAuth(...args),
+}));
+
+vi.mock('@/src/actions', () => ({
+  getCountries: (...args: unknown[]) => mockGetCountries(...args),
+  getUserAddress: (...args: unknown[]) => mockGetUserAddress(...args),
+}));
+
+vi.mock('next-auth/react', () => ({
+  useSession: vi.fn(() => ({ data: { user: { id: 'u1' } } })),
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({ push: vi.fn(), replace: vi.fn() })),
+  redirect: vi.fn(),
+}));
 
 import CheckoutAddressPage from '@/src/app/(shop)/checkout/address/page';
 
 describe('Checkout address page', () => {
-  it('renders the title and subtitle', () => {
-    render(<CheckoutAddressPage />);
+  beforeEach(() => {
+    mockAuth.mockResolvedValue({ user: { id: 'u1' } });
+    mockGetCountries.mockResolvedValue([
+      { id: 'US', name: 'United States' },
+      { id: 'MX', name: 'Mexico' },
+    ]);
+    mockGetUserAddress.mockResolvedValue(null);
+  });
+
+  it('renders the title and subtitle', async () => {
+    const page = await CheckoutAddressPage();
+    render(page);
 
     expect(
       screen.getByRole('heading', { level: 1, name: /direcci/i }),
@@ -13,39 +45,12 @@ describe('Checkout address page', () => {
     expect(screen.getByText(/direcci.*de entrega/i)).toBeDefined();
   });
 
-  // it('renders all address fields and country options', () => {
-  //   const { container } = render(<CheckoutAddressPage />);
-
-  //   expect(screen.getByText(/nombres/i)).toBeDefined();
-  //   expect(screen.getByText(/apellidos/i)).toBeDefined();
-  //   expect(screen.getAllByText(/direcci/i).length).toBeGreaterThanOrEqual(2);
-  //   expect(screen.getByText(/ciudad/i)).toBeDefined();
-  //   expect(container.textContent).toContain('CÃ³digo postal');
-  //   expect(container.textContent).toContain('PaÃ­s');
-  //   expect(container.textContent).toContain('TelÃ©fono');
-
-  //   expect(container.querySelectorAll('input')).toHaveLength(7);
-
-  //   const select = screen.getByRole('combobox');
-  //   expect(select).toBeDefined();
-  //   const options = screen.getAllByRole('option');
-  //   expect(options).toHaveLength(7);
-  //   expect(options.map((option) => option.textContent)).toEqual([
-  //     '[ Seleccione ]',
-  //     'MÃ©xico',
-  //     'Estados Unidos',
-  //     'CanadÃ¡',
-  //     'EspaÃ±a',
-  //     'Francia',
-  //     'Alemania',
-  //   ]);
-  // });
-
-  it('renders the next step link to checkout summary', () => {
-    render(<CheckoutAddressPage />);
+  it('renders the next step submit button', async () => {
+    const page = await CheckoutAddressPage();
+    render(page);
 
     expect(
-      screen.getByRole('link', { name: /siguiente/i }).getAttribute('href'),
-    ).toBe('/checkout');
+      screen.getByRole('button', { name: /siguiente/i }),
+    ).toBeDefined();
   });
 });
